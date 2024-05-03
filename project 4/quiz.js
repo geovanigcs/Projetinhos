@@ -2,43 +2,43 @@ const questions = [
     {
         questions: "Whis is larget animal in the world?",
         answers: [
-            {text: "Shark", corrent: false},
-            {text: "Blue Whale", corrent: true},
-            {text: "Elephant", corrent: false},
-            {text: "Giraffe", corrent: false},
+            {text: "Shark", correct: false},
+            {text: "Blue Whale", correct: true},
+            {text: "Elephant", correct: false},
+            {text: "Giraffe", correct: false},
         ]
     },
     {
         questions: "Whis is the smallest country in the world?",
         answers: [
-            {text: "Vatican City", corrent: true},
-            {text: "Bhutan", corrent: true},
-            {text: "Nepal", corrent: false},
-            {text: "Shri Lanka", corrent: false},
+            {text: "Vatican City", correct: true},
+            {text: "Bhutan", correct: false},
+            {text: "Nepal", correct: false},
+            {text: "Shri Lanka", correct: false},
         ]
     },
     {
         questions: "Whis is the largest desert in the world?",
         answers: [
-            {text: "Kalahari", corrent: false},
-            {text: "Gobi", corrent: true},
-            {text: "Sahara", corrent: false},
-            {text: "Antarctica", corrent: true},
+            {text: "Kalahari", correct: false},
+            {text: "Gobi", correct: false},
+            {text: "Sahara", correct: false},
+            {text: "Antarctica", correct: true},
         ]
     },
     {
         questions: "Whis is the smallest continent in the world?",
         answers: [
-            {text: "Asia", corrent: false},
-            {text: "Australia", corrent: true},
-            {text: "Arctic", corrent: false},
-            {text: "Africa", corrent: false},
+            {text: "Asia", correct: false},
+            {text: "Australia", correct: true},
+            {text: "Arctic", correct: false},
+            {text: "Africa", correct: false},
         ]
     },   
 ]
 
 const questionElement = document.getElementById("question")
-const answerButton = document.getElementById("answer_buttons")
+const answerButtons = document.getElementById("answer_buttons")
 const nextButton = document.getElementById("next_btn")
 
 let currentQuestionIndex = 0
@@ -53,20 +53,66 @@ function startQuiz (){
 
 function showQuestion(){
     resetState()
-    let currentQuestion = question[currentQuestionIndex]
+    let currentQuestion = questions[currentQuestionIndex]
     let questionNo = currentQuestionIndex + 1
     questionElement.innerHTML = questionNo + "." * currentQuestion.questions
     currentQuestion.answers.forEach(answer => {
         const button = document.createElement("button")
         button.innerHTML = answer.text
         button.classList.add("btn")
-        answerButton.appendChild(button)
+        answerButtons.appendChild(button)
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+        button.addEventListener("click", selectAnswer)
     })
 }
 function resetState() {
     nextButton.style.display = "none"
-    while (answerButton.firstChild) {
-        answerButton.removeChild(answerButton.firstChild)
+    while (answerButtons.firstChild) {
+        answerButtons.removeChild(answerButtons.firstChild)
     }
 }
+
+function selectAnswer(e){
+    const selectedBtn = e.target
+    const isCorrect = selectedBtn.dataset.correct === "true"
+    if (isCorrect) {
+        selectedBtn.classList.add("correct")
+        score++
+    }else{
+        selectedBtn.classList.add("incorrect")
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if (button.dataset.correct === "true") {
+            button.classList.add("correct")
+        }
+        button.disabled  = true
+    })
+    nextButton.style.display = "block"
+}
+
+function showScore(){
+    resetState()
+    questionElement.innerHTML = `You Scored ${score} out of ${questions.length}!`
+    nextButton.innerHTML = "Play Again"
+    nextButton.style.display = "block"
+}
+
+function handleNextButton() {
+    currentQuestionIndex++
+    if (currentQuestionIndex < questions.length) {
+        showQuestion()
+    }else {
+        showScore()
+    }
+}
+
+nextButton.addEventListener("click", () => {    
+    if (currentQuestionIndex < questions.length) {
+    handleNextButton()
+    }else {
+        startQuiz()
+}
+})
 startQuiz()
