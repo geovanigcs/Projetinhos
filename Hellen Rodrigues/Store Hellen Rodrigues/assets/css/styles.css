@@ -141,6 +141,21 @@ button, textarea, input {
 .header__top_action {
   color: var(--text-color);
 }
+
+.nav, .nav__menu, .nav__list, .header__user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.nav{
+  background-color: var(--first-color);
+  height: calc(var(--header-height) + 2.5rem);
+}
+
+
+.nav__logo_img {
+  width: 150px;
+}
 /* Active link */
 
 /*=============== HOME ===============*/
